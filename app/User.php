@@ -31,4 +31,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	protected $hidden = ['password', 'remember_token'];
 
+	public function profile() {
+		//como crear una relación con la tabla profile
+		return $this->hasOne('Course\UserProfile');
+
+	}
+
+	public function getFullNameAttribute() {
+
+		return $this->first_name.' '.$this->last_name;
+	}
+
 }

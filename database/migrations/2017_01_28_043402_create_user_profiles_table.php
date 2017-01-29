@@ -15,15 +15,14 @@ class CreateUserProfilesTable extends Migration {
 		Schema::create('user_profiles', function(Blueprint $table)
 		{
 			$table->increments('id');
-
+			
 			$table->mediumText('bio')->nullable();
-
 			$table->string('twitter')->nullable();
-
 			$table->string('website')->nullable();
-
+			$table->date('birthdate')->nullable();
 			$table->integer('user_id')->unsigned();
 
+			//crear una foranea
 			$table->foreign('user_id')
 			->references('id')
 			->on('users')
