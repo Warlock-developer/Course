@@ -20,3 +20,10 @@ Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',
 ]);
+
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
+
+	Route::resource('users', 'UsersController');
+});
+
+
