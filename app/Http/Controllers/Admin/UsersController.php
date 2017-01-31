@@ -1,13 +1,13 @@
 <?php namespace Course\Http\Controllers\Admin;
 
-use Course\Http\Requests;
 use Course\Http\Controllers\Controller;
-
+use Course\Http\Requests;
 use Course\Http\Requests\CreateUserRequest;
 use Course\Http\Requests\EditUserRequest;
 use Course\User;
-use Illuminate\Routing\Redirector;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller {
@@ -96,7 +96,15 @@ class UsersController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		//
+		
+		$user = User::findOrFail($id);
+		$user->delete();
+		
+
+
+		Session::flash('message', $user->full_name.' fue eliminado');
+
+		return redirect()->route('admin.users.index');
 	}
 
 }
