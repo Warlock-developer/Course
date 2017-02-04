@@ -7,10 +7,24 @@ use Course\Http\Requests\EditUserRequest;
 use Course\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller {
+
+
+	public function __construct(){
+
+		$this->middleware('auth');
+
+		$this->beforeFilter('@findUser',['only' => ['show','edit','update','destroy']]);
+	}
+
+
+	public function findUser(Route $route){
+		$this->user = User::findOrFail($route->getParameter('users'));
+	}
 
 
 	/**
@@ -18,10 +32,16 @@ class UsersController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
-		$users = User::paginate();
+		
+		$users = User::filterAndPaginate($request->get('name'), $request->get('type'));
 
+		//busca dentro de los scope
+		$users = User::name($request->get('name'))
+			->type($request->get('type'))
+			->orderBy('id','DESC')
+			->paginate();
 		return view('admin.users.index', compact('users'));	
 	}
 
@@ -66,10 +86,7 @@ class UsersController extends Controller {
 	 */
 	public function edit($id)
 	{
-		
-		$user = User::findOrFail($id);
-		return view('admin.users.edit', compact('user'));
-
+		return view('admin.users.edit')->with('user', $this->user);
 	}
 
 	/**
@@ -80,10 +97,10 @@ class UsersController extends Controller {
 	 */
 	public function update(EditUserRequest $request, $id)
 	{
-		$user = User::findOrFail($id);
+		
 
-		$user->fill($request->all());
-		$user->save();
+		$this->user->fill($request->all());
+		$this->user->save();
 
 		return redirect()->back();
 	}
@@ -94,15 +111,22 @@ class UsersController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy($id, Request $request)
 	{
-		
-		$user = User::findOrFail($id);
-		$user->delete();
-		
+		$this->user->delete();
 
+		$message =  $this->user->full_name.' fue eliminado';
 
-		Session::flash('message', $user->full_name.' fue eliminado');
+		if( $request->ajax()) {
+
+			return response()->json([
+				'id' => $this->user->id,
+				'message' => $message
+			]);
+
+		}
+
+		Session::flash('message', $message);
 
 		return redirect()->route('admin.users.index');
 	}

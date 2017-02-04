@@ -11,7 +11,7 @@
 					@include('admin.users.partials.messages')
 
 					{!! Form::model($user, ['route' => ['admin.users.update', $user], 'method' => 'PUT']) !!}
-	    				@include('admin.users.partials.fields');
+	    				@include('admin.users.partials.fields')
 	    				<div class="row">
 	    					<div class="col-lg-6">
 								<button type="submit" class="btn btn-default">Actualizar Usuario</button>

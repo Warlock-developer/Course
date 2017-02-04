@@ -16,5 +16,5 @@
 </div>
 <div class="form-group">
 	{!! Form::label('type', 'Tipo') !!}
-	{!! Form::select('type', ['' => 'Seleccione Opción', 'user' => 'Usuario', 'admin' => 'Administrador'], null, ['class' => 'form-control']) !!}
+	{!! Form::select('type', config('options.type'), null, ['class' => 'form-control']) !!}
 </div>

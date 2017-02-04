@@ -31,6 +31,17 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	protected $hidden = ['password', 'remember_token'];
 
+
+	// Queries
+	// 
+	// 
+	
+	public static function filterAndPaginate($name, $type) {
+
+		return  User::name($name)->type($type)->orderBy('id','DESC')->paginate();
+	}
+
+
 	public function profile() {
 		//como crear una relación con la tabla profile
 		return $this->hasOne('Course\UserProfile');
@@ -48,5 +59,41 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 			$this->attributes['password'] = bcrypt($value);
 		}
 	}
+
+	//scope
+	public function scopeName($query, $name) {
+		if( trim($name) != '')
+		{
+			$query->where('full_name', "LIKE", "%$name%");	
+		}
+		
+	}
+
+	//scope de elocuent
+	public function scopeType($query, $type) {
+
+		$types = config('options.type');
+
+		if($type != "" && isset($types[$type])) {
+
+			$query->where('type', $type);
+		}
+
+	}
+
+	public function isAdmin() {
+
+		return $this->type === 'admin';
+
+	}
+
+
+	//sobrescribiendo el methodo save
+	/*public function save() {
+
+		$this->full_name = 
+		parent::save();
+
+	}*/
 
 }

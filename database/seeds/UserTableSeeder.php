@@ -12,12 +12,16 @@ class UserTableSeeder extends Seeder {
 
 		for($i = 0; $i <= 30; $i++){
 			
+			$firstName = $faker->firstName;
+			$lastName = $faker->lastName;
+
 			$id = \DB::table('users')->insertGetId(array(
-				'first_name' => $faker->firstName,
-				'last_name' => $faker->lastName,
+				'first_name' => $firstName,
+				'last_name' => $lastName,
 				'email' => $faker->unique()->email,
 				'password' => \Hash::make('123'),
-				'type' => 'user'
+				'type' => $faker->randomElement(['editor', 'contributor', 'suscriber', 'user']),
+				'full_name' => "$firstName $lastName"
 			));
 
 			\DB::table('user_profiles')->insert(array(
